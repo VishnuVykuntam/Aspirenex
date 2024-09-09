@@ -5,8 +5,6 @@ def printstate(position):
  
 def minimax(state, player):
     
-    # global alpha
-    # global beta
     number=state.count(' ')
     x=game_over(state)
     if x:
@@ -47,18 +45,34 @@ def minimax(state, player):
                     #     break
             return mineval
 
-def best_play(state):
-    best=-math.inf
-    best_move=None
-    for i in range(9):
-        if state[i]==' ':
-            state[i]="X"
-            move_eval=minimax(state,False)
-            state[i]=" "
-            if move_eval>best:
-                best=move_eval
-                best_move=i
-    return best_move
+def best_play(state,turn):
+    if not turn:
+        best=-math.inf
+        best_move=None
+        
+        for i in range(9):
+            # print("negative turn")
+            if state[i]==' ':
+                state[i]="X"
+                move_eval=minimax(state,False)
+                state[i]=" "
+                if move_eval>best:
+                    best=move_eval
+                    best_move=i
+        return best_move
+    if turn:
+        best=math.inf
+        best_move=None
+        # print("Positive turn")
+        for i in range(9):
+            if state[i]==' ':
+                state[i]="X"
+                move_eval=minimax(state,True)
+                state[i]=" "
+                if move_eval<best:
+                    best=move_eval
+                    best_move=i
+        return best_move
 
 
 def game_over(state):
@@ -123,17 +137,27 @@ position[8]=' '
 alpha=-math.inf
 beta=math.inf
 
-def user_play():
+def user_play(turn):
     print("enter the location to put your piece")
     x=int(input())
-    position[x]='O'
+    if turn==1:
+        position[x]='O'
+    else:
+        position[x]='X'
     printstate(position)
 
 
 
-def ai_play():
-    move=best_play(position)
-    position[move]='X'
+def ai_play(choice):
+    if choice==1:
+        turn=True
+    else:
+        turn=False
+    move=best_play(position,turn)
+    if choice==1:
+        position[move]='X'
+    else:
+        position[move]='O'
     printstate(position)
 
 print("the board is\n")
@@ -152,13 +176,13 @@ if x==1:
         if not game_over(position):
            
             if position.count(' ') !=0:
-                ai_play()
+                ai_play(1)
             else:
                 break
         if  not game_over(position):
             if position.count(' ') !=0:
                 print(f'{position.count(' ')} remaining places to play')
-                user_play()
+                user_play(1)
         else:
             break
 elif x==2:
@@ -167,29 +191,18 @@ elif x==2:
         if  not game_over(position):
             if position.count(' ') !=0:
                 print(f'{position.count(' ')} remaining places to play')
-                user_play()
+                user_play(2)
         if not game_over(position):
             if position.count(' ') !=0:
-                ai_play()
+                ai_play(2)
             else:
                 break
         else:
             break
-    
+else:
+    print("wrong value")
+    exit()
 
 who=game_over(position)
 result(who)
-
-
-
-
-
-
-
-
-
-
-
-
-
 
